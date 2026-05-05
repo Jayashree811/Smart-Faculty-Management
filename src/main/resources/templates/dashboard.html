@@ -9,11 +9,9 @@
 body {
     background: #f4f8fb;
 }
-
 .screen {
     display: none;
 }
-
 .center-box {
     height: 100vh;
     display: flex;
@@ -26,7 +24,7 @@ body {
 
 <body>
 
-<!-- 🔵 START SCREEN -->
+<!-- START SCREEN -->
 <div id="startScreen" class="screen center-box" style="display:block;">
     <div class="text-center">
         <h1 class="mb-4">🎓 Faculty Management System</h1>
@@ -36,7 +34,7 @@ body {
     </div>
 </div>
 
-<!-- 🔵 MENU SCREEN -->
+<!-- MENU -->
 <div id="menuScreen" class="screen center-box">
     <div class="text-center">
         <h2 class="mb-4">Choose Action</h2>
@@ -56,7 +54,7 @@ body {
     </div>
 </div>
 
-<!-- 🔵 ADD SCREEN -->
+<!-- ADD SCREEN -->
 <div id="addScreen" class="screen container mt-5">
 
 <h2>Add Faculty</h2>
@@ -90,7 +88,7 @@ body {
 
 </div>
 
-<!-- 🔵 VIEW SCREEN -->
+<!-- VIEW SCREEN -->
 <div id="viewScreen" class="screen container mt-5">
 
 <h2>View Faculty</h2>
@@ -115,9 +113,11 @@ body {
 
 <script>
 
-// 🔥 SCREEN SWITCH (FIXED)
-function showScreen(screenId) {
+// 🔥 AUTO DETECT BASE URL (IMPORTANT FIX)
+const BASE_URL = window.location.origin;
 
+// SCREEN SWITCH
+function showScreen(screenId) {
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("menuScreen").style.display = "none";
     document.getElementById("addScreen").style.display = "none";
@@ -126,7 +126,7 @@ function showScreen(screenId) {
     document.getElementById(screenId).style.display = "block";
 }
 
-// 🔥 ADD FACULTY
+// ADD FACULTY
 function addFaculty() {
 
     const data = {
@@ -137,7 +137,7 @@ function addFaculty() {
         workload: document.getElementById("workload").value
     };
 
-    fetch("http://localhost:5050/api/faculty", {
+    fetch(`${BASE_URL}/api/faculty`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -149,13 +149,17 @@ function addFaculty() {
         alert("Added ✅");
         clearForm();
         loadFaculty();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error adding faculty ❌");
     });
 }
 
-// 🔥 LOAD DATA
+// LOAD DATA
 function loadFaculty() {
 
-    fetch("http://localhost:5050/api/faculty")
+    fetch(`${BASE_URL}/api/faculty`)
     .then(res => res.json())
     .then(data => {
 
@@ -188,20 +192,22 @@ function loadFaculty() {
 
         document.getElementById("tableBody").innerHTML = rows;
         document.getElementById("viewTable").innerHTML = viewRows;
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error loading data ❌");
     });
 }
 
-// 🔥 DELETE
+// DELETE
 function deleteFaculty(id) {
-    fetch(`http://localhost:5050/api/faculty/${id}`, {
+    fetch(`${BASE_URL}/api/faculty/${id}`, {
         method: "DELETE"
     })
-    .then(() => {
-        loadFaculty();
-    });
+    .then(() => loadFaculty());
 }
 
-// 🔥 CLEAR FORM
+// CLEAR FORM
 function clearForm() {
     document.getElementById("name").value = "";
     document.getElementById("email").value = "";
